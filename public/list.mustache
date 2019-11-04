@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css">
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css">
+    <style>
+      .ms-List {
+        max-width: 50%;
+        margin: auto;
+      }
+      i.ms-Icon {
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="ms-List">
+    {{#containers}}
+      <li class="ms-ListItem" tabindex="0">
+        <span class="ms-ListItem-primaryText">{{Names.0}}</span>
+        <span class="ms-ListItem-secondaryText">{{Image}}</span>
+        <span class="ms-ListItem-tertiaryText">{{Id}}</span>
+        <span class="ms-ListItem-metaText">{{Status}}</span>
+        <div class="ms-ListItem-actions">
+          <div class="ms-ListItem-action">
+            {{#running}}
+            <a target="_blank" href="/containers/{{Id}}/exec">
+              <i class="ms-Icon ms-Icon--OpenInNewWindow"></i>
+            </a>
+            {{/running}}
+          </div>
+        </div>
+      </li>
+    {{/containers}}
+    </ul>
+  </body>
+</html>

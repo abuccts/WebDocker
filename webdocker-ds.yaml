@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: webdocker-ds
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      name: webdocker-ds
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: webdocker-ds
+    spec:
+      hostNetwork: false
+      hostPID: false
+      containers:
+      - image: docker.pkg.github.com/abuccts/webdocker/webdocker:latest
+        name: webdocker
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        ports:
+        - name: webdocker-port
+          containerPort: 8080
+          hostPort: 8080
+        volumeMounts:
+          - name: docker-socket
+            mountPath: /var/run/docker.sock
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock

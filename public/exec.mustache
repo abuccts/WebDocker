@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/xterm/css/xterm.css">
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css">
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css">
+    <style>
+      .show {
+        opacity: 1;
+        transition: opacity 1000ms;
+      }
+      .hide {
+        opacity: 0;
+        transition: opacity 1000ms;
+      }
+      #alert {
+        position: absolute;
+        top: 0;
+        right: 0;
+        float: right;
+        width: 15%;
+        z-index: 1000;
+      }
+      #terminal {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="alert" class="hide ms-MessageBar ms-MessageBar--blocked">
+      <div class="ms-MessageBar-content">
+        <div class="ms-MessageBar-icon">
+          <i class="ms-Icon ms-Icon--Blocked"></i>
+        </div>
+        <div id="alert-text" class="ms-MessageBar-text">Disconnected!</div>
+      </div>
+    </div>
+    <div id="terminal"></div>
+    <script src="/xterm/lib/xterm.js"></script>
+    <script src="/xterm-addon-attach/lib/xterm-addon-attach.js"></script>
+    <script src="/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+    <script>
+      const socket = new WebSocket(`ws://${window.location.host}/exec?name={{{name}}}`);
+      const alertElement = document.getElementById("alert");
+      const alertTextElement = document.getElementById("alert-text");
+      const terminalElement = document.getElementById("terminal");
+
+      const term = new Terminal();
+      const fitAddon = new FitAddon.FitAddon();
+      const attachAddon = new AttachAddon.AttachAddon(socket);
+
+      term.open(terminalElement);
+      term.loadAddon(fitAddon);
+      fitAddon.fit();
+      window.onresize = () => {
+        fitAddon.fit();
+      };
+
+      socket.onopen = () => {
+        term.loadAddon(attachAddon);
+      };
+      socket.onclose = (event) => {
+        if (event.code === 1000) {
+          alertTextElement.innerHTML = "Connection closed.";
+        } else {
+          alertTextElement.innerHTML = event.reason;
+        }
+        alertElement.classList.add("show");
+        alertElement.classList.remove("hide");
+      };
+      socket.onerror = (event) => {
+        alertTextElement.innerHTML = event.message;
+        alertElement.classList.add("show");
+        alertElement.classList.remove("hide");
+      };
+    </script>
+  </body>
+</html>
