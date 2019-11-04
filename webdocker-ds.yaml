@@ -24,6 +24,16 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+        env:
+        - name: SERVER_PORT
+          value: 8080
+        - name: DOCKER_SOCKET_PATH
+          # absolute path for docker.sock, default path is /var/run/docker.sock
+          value: /var/run/docker.sock
+        - name: DOCKER_LIST_FILTERS
+          # example filters for running containers with io.kubernetes.container.name=app label
+          # reference: https://docs.docker.com/engine/api/v1.37/#operation/ContainerList
+          value: '{"status":["running"],"label":["io.kubernetes.container.name=app"]}'
         ports:
         - name: webdocker-port
           containerPort: 8080

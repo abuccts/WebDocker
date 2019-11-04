@@ -78,5 +78,6 @@ wss.exec.on("connection", async (ws, req) => {
 
 // start http server
 server.listen(config.server_port, () => {
-  console.log(`Starting WebDocker Server at ${config.server_ip}:${config.server_port}.`);
+  console.log("Using config: %j.", config);
+  console.log("Starting WebDocker Server at localhost:%s ...", config.server_port);
 });

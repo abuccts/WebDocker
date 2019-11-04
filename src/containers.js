@@ -1,8 +1,15 @@
 const util = require("util");
+const config = require("./config");
 const dockerd = require("./dockerd");
 
 const list = async () => {
-  const containers = await util.promisify(dockerd.listContainers.bind(dockerd))({all: true});
+  const options = {};
+  if (config.docker_list_filters) {
+    options.filters = config.docker_list_filters;
+  } else {
+    options.all = true;
+  }
+  const containers = await util.promisify(dockerd.listContainers.bind(dockerd))(options);
   return containers;
 };
 
